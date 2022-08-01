@@ -1,0 +1,67 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id BigInt @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime @updatedAt
+  username  String  @db.Text
+  password  String  @db.Text
+  emailAddress  String  @db.Text
+  symbolarts SymbolArt[]
+}
+
+model SymbolArt {
+  id BigInt @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime @updatedAt
+  author User @relation(fields: [authorId], references: [id])
+  authorId BigInt
+  content Bytes @db.ByteA
+  SymbolArtTags SymbolArtTags[]
+}
+
+model SymbolArtTags {
+  id  BigInt @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime @updatedAt
+  symbolArt SymbolArt @relation(fields: [symbolArtId], references: [id])
+  symbolArtId BigInt
+  tags Tags @relation(fields: [tagid], references: [id])
+  tagid BigInt
+}
+
+model Tags {
+  id  BigInt @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime @updatedAt
+  symbolArtTags SymbolArtTags[]
+}
+
+model ContentRatings {
+  id BigInt @id @default(autoincrement())
+  rating String @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model UserPermissions {
+  id  BigInt @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model UserGroups {
+  id  BigInt @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime @updatedAt
+}
